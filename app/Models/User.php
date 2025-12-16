@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'avatar',
+        'google_id',
+        'phone',
+        'address',
     ];
 
     /**
@@ -44,5 +49,42 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function wishlists()
+    {
+        return $this->hasManny(Wishlist::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasManny(Order::class);
+    }
+
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
+    }
+
+    public function hasInWishlist(Product $product) : bool
+    {
+        return $this->wishlist()
+            ->where('product_id', $product->id)
+            ->exists();
     }
 }
