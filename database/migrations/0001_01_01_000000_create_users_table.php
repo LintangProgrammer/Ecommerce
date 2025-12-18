@@ -1,5 +1,4 @@
 <?php
-// database/migrations/xxxx_add_fields_to_users_table.php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,42 +6,44 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['customer', 'admin'])
-                  ->default('customer')
-                  ->after('password'); 
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
 
-            $table->string('avatar')
-                  ->nullable()
-                  ->after('role');
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
 
-            $table->string('google_id')
-                  ->nullable()
-                  ->unique()
-                  ->after('avatar');
-
-            $table->string('phone', 20)
-                  ->nullable()
-                  ->after('google_id');
-
-            $table->text('address')
-                  ->nullable()
-                  ->after('phone');
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
     }
 
     /**
-     * Rollback migration.
-     * Method ini dipanggil saat `php artisan migrate:rollback`
-     * HARUS kebalikan dari method up() - hapus kolom yang ditambahkan.
+     * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Hapus array kolom sekaligus
-            $table->dropColumn(['role', 'avatar', 'google_id', 'phone', 'address']);
-        });
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };
