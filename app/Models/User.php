@@ -86,12 +86,13 @@ class User extends Authenticatable
         return $this->role === 'customer';
     }
 
-    public function hasInWishlist(Product $product) : bool
-    {
-        return $this->wishlist()
-            ->where('product_id', $product->id)
-            ->exists();
-    }
+    public function hasInWishlist(Product $product): bool
+{
+    return $this->wishlists()
+        ->where('product_id', $product->id)
+        ->exists();
+}
+
 
     public function getAvatarUrlAttribute(): string
 {

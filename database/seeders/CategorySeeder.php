@@ -53,6 +53,6 @@ class CategorySeeder extends Seeder
             Category::create($category);
         }
 
-        $this->command->info('Categories seeded successfully!');
+        $this->command->info('✅ Categories seeded successfully!');
     }
 }
