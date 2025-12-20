@@ -1,166 +1,104 @@
-{{-- ================================================
-FILE: resources/views/layouts/admin.blade.php
-FUNGSI: Master layout untuk halaman admin
-================================================ --}}
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') - Admin Panel</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>SB Admin 2 - Dashboard</title>
 
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);
-        }
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.7);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 4px 12px;
-            transition: all 0.2s;
-        }
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .sidebar .nav-link i {
-            width: 24px;
-        }
-    </style>
-    @stack('styles')
 </head>
 
-<body class="bg-light">
-    <div class="d-flex">
-        {{-- Sidebar --}}
-        <div class="sidebar d-flex flex-column" style="width: 260px;">
-            {{-- Brand --}}
-            <div class="p-3 border-bottom border-secondary">
-                <a href="{{ route('admin.dashboard') }}"
-                    class="text-white text-decoration-none d-flex align-items-center">
-                    <i class="bi bi-shop fs-4 me-2"></i>
-                    <span class="fs-5 fw-bold">Admin Panel</span>
-                </a>
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        @include('layouts.partials.sidebar')
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+               @include('layouts.partials.navbar')
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+               @include('partials.flash-messages')
+               @yield('content')
+                <!-- /.container-fluid -->
+
             </div>
+            <!-- End of Main Content -->
 
-            {{-- Navigation --}}
-            <nav class="flex-grow-1 py-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                        </a>
-                    </li>
+            <!-- Footer -->
+            @include('layouts.partials.footer')
+            <!-- End of Footer -->
 
-                    <li class="nav-item">
-                        <a href="{{ route('admin.products.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                            <i class="bi bi-box-seam me-2"></i> Produk
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ route('admin.categories.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                            <i class="bi bi-folder me-2"></i> Kategori
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ route('admin.orders.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                            <i class="bi bi-receipt me-2"></i> Pesanan
-                            {{-- Logic PHP di View ini hanya untuk contoh.
-                            Best Practice: Gunakan View Composer atau inject variable dari Controller.
-                            Jangan query database langsung di Blade view di production app! --}}
-                            {{-- @php
-                            $pendingCount = \App\Models\Order::where('status', 'pending')
-                            ->where('payment_status', 'paid')->count();
-                            @endphp --}}
-                            {{-- @if($pendingCount > 0)
-                            <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>
-                            @endif --}}
-                        </a>
-                    </li>
-
-                    {{-- <li class="nav-item">
-                        <a href="{{ route('admin.users.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                            <i class="bi bi-people me-2"></i> Pengguna
-                        </a>
-                    </li> --}}
-
-                    <li class="nav-item mt-3">
-                        <span class="nav-link text-muted small text-uppercase">Laporan</span>
-                    </li>
-
-                    {{-- <li class="nav-item">
-                        <a href="{{ route('admin.reports.sales') }}"
-                            class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-                            <i class="bi bi-graph-up me-2"></i> Laporan Penjualan
-                        </a>
-                    </li> --}}
-                </ul>
-            </nav>
-
-            {{-- User Info --}}
-            <div class="p-3 border-top border-secondary">
-                <div class="d-flex align-items-center text-white">
-                    <img src="{{ auth()->user()->avatar_url }}" class="rounded-circle me-2" width="36" height="36">
-                    <div class="flex-grow-1">
-                        <div class="small fw-medium">{{ auth()->user()->name }}</div>
-                        <div class="small text-muted">Administrator</div>
-                    </div>
-                </div>
-            </div>
         </div>
+        <!-- End of Content Wrapper -->
 
-        {{-- Main Content --}}
-        <div class="flex-grow-1">
-            {{-- Top Bar --}}
-            <header class="bg-white shadow-sm py-3 px-4 d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">@yield('page-title', 'Dashboard')</h4>
-                <div class="d-flex align-items-center">
-                    <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm me-2" target="_blank">
-                        <i class="bi bi-box-arrow-up-right me-1"></i> Lihat Toko
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-box-arrow-right me-1"></i> Logout
-                        </button>
-                    </form>
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
                 </div>
-            </header>
-
-            {{-- Flash Messages --}}
-            <div class="px-4 pt-3">
-                @include('partials.flash-messages')
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
             </div>
-
-            {{-- Page Content --}}
-            <main class="p-4">
-                @yield('content')
-            </main>
         </div>
     </div>
 
-    @stack('scripts')
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
 </body>
 
 </html>
