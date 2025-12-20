@@ -13,7 +13,8 @@ FUNGSI: Master layout untuk halaman admin
 
     <title>@yield('title') - Admin Panel</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -88,32 +89,32 @@ FUNGSI: Master layout untuk halaman admin
                             Best Practice: Gunakan View Composer atau inject variable dari Controller.
                             Jangan query database langsung di Blade view di production app! --}}
                             {{-- @php
-                                $pendingCount = \App\Models\Order::where('status', 'pending')
-                                    ->where('payment_status', 'paid')->count();
+                            $pendingCount = \App\Models\Order::where('status', 'pending')
+                            ->where('payment_status', 'paid')->count();
                             @endphp --}}
                             {{-- @if($pendingCount > 0)
-                                <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>
+                            <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>
                             @endif --}}
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a href=""
+                    {{-- <li class="nav-item">
+                        <a href="{{ route('admin.users.index') }}"
                             class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                             <i class="bi bi-people me-2"></i> Pengguna
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="nav-item mt-3">
                         <span class="nav-link text-muted small text-uppercase">Laporan</span>
                     </li>
 
-                    <li class="nav-item">
-                        <a href=""
+                    {{-- <li class="nav-item">
+                        <a href="{{ route('admin.reports.sales') }}"
                             class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                             <i class="bi bi-graph-up me-2"></i> Laporan Penjualan
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </nav>
 

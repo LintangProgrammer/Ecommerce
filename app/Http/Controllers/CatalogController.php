@@ -127,4 +127,3 @@ class CatalogController extends Controller
         return view('catalog.show', compact('product', 'relatedProducts'));
     }
 }
-

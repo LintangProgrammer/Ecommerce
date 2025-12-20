@@ -1,19 +1,19 @@
-    {{-- ================================================
-    FILE: resources/views/home.blade.php
-    FUNGSI: Halaman utama website
-    ================================================ --}}
+{{-- ================================================
+FILE: resources/views/home.blade.php
+FUNGSI: Halaman utama website
+================================================ --}}
 
-    @extends('layouts.app')
+@extends('layouts.app')
 
-    @section('title', 'Beranda')
+@section('title', 'Beranda')
 
-    @section('content')
-        {{-- Hero Section --}}
-        <section class="bg-primary text-white py-5">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <h1 class="display-4 fw-bold mb-3">
+@section('content')
+    {{-- Hero Section --}}
+    <section class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-3">
                         Belanja Online Mudah & Terpercaya
                     </h1>
                     <p class="lead mb-4">
