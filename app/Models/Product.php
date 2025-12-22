@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Product extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'category_id',
@@ -278,6 +281,14 @@ class Product extends Model
             'popular' => $query->withCount('orderItems')->orderByDesc('order_items_count'),
             default => $query->latest(),
         };
+    }
+
+    // ==================== ACTIVITY LOG ====================
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable();
     }
 
     // ==================== BOOT METHOD ====================
