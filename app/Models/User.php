@@ -62,9 +62,11 @@ class User extends Authenticatable
 
 
     public function wishlists()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
+{
+    // Relasi User ke Product melalui tabel wishlists
+    return $this->belongsToMany(Product::class, 'wishlists')
+                ->withTimestamps(); // Agar created_at/updated_at di pivot terisi
+}
 
     public function orders()
     {
@@ -86,11 +88,9 @@ class User extends Authenticatable
         return $this->role === 'customer';
     }
 
-    public function hasInWishlist(Product $product): bool
+    public function hasInWishlist(Product $product)
 {
-    return $this->wishlists()
-        ->where('product_id', $product->id)
-        ->exists();
+    return $this->wishlists()->where('product_id', $product->id)->exists();
 }
 
 
@@ -134,6 +134,7 @@ public function getInitialsAttribute(): string
     // Ambil maksimal 2 huruf pertama saja
     return substr($initials, 0, 2);
 }
+
 
 
     

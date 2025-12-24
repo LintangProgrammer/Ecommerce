@@ -2,8 +2,7 @@
 FILE: resources/views/home.blade.php
 FUNGSI: Halaman utama website
 ================================================ --}}
-
-@extends('layouts.app')
+<x-app-layout>
 
 @section('title', 'Beranda')
 
@@ -118,3 +117,4 @@ FUNGSI: Halaman utama website
         </div>
     </section>
 @endsection
+</x-app-layout>

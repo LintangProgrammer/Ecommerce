@@ -62,7 +62,9 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('admin.products.show', $product) }}" class="btn btn-sm btn-info">Detail</a>
+                                <a href="{{ route('admin.products.show', $product) }}" class="btn btn-sm btn-info">Detail
+                                <i class="bi bi-eye"></i>
+                                </a>
                                 <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">Edit
                                 <i class="bi bi-pencil"></i>
                                 </a>
@@ -81,4 +83,6 @@
     <div class="mt-3">
         {{ $products->links('pagination::bootstrap-5') }}
     </div>
+
+    
 @endsection

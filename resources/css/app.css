@@ -4,11 +4,15 @@
    ================================================ */
 
 /* Import Bootstrap CSS */
-/* Kita import di sini agar ikut ter-compile oleh Vite dan bisa di-minify saat production */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 /* Import Bootstrap Icons */
 @import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Import SimpleBar CSS */
+@import 'simplebar/dist/simplebar.css';
+
+
 
 /* ================================================
    CUSTOM STYLES - Variabel dan Override
@@ -16,17 +20,131 @@
 
 :root {
     /* Warna Brand Toko */
-    --primary-color: #4f46e5;
-    /* Indigo */
-    --secondary-color: #10b981;
-    /* Emerald */
-    --accent-color: #f59e0b;
-    /* Amber */
+    --primary-color: #4f46e5; /* Indigo */
+    --secondary-color: #10b981; /* Emerald */
+    --accent-color: #f59e0b; /* Amber */
+    --success: #10b981;
+    --info: #0dcaf0;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
 
     /* Warna Text */
     --text-dark: #1f2937;
     --text-muted: #6b7280;
     --text-light: #9ca3af;
+
+    /* Sidebar */
+    --sidebar-width: 250px;
+    --header-height: 70px;
+}
+
+/* Body */
+body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--text-dark);
+    background-color: #f8fafc;
+    overflow-x: hidden;
+}
+
+/* Layout */
+.page-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.body-wrapper {
+    flex: 1;
+    overflow-x: hidden;
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    transition: all 0.25s ease;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 24px;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table > :not(caption) > * > * {
+    padding: 1rem 1.5rem;
+    border-bottom-width: 1px;
+}
+
+/* Forms */
+.form-control, .form-select {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--gray-300);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+}
+
+/* Utilities */
+.rounded-10 {
+    border-radius: 10px !important;
+}
+
+.fs-7 {
+    font-size: 0.875rem !important;
+}
+
+.fs-8 {
+    font-size: 0.75rem !important;
+}
+
+/* Custom Scrollbar */
+.simplebar-scrollbar::before {
+    background-color: var(--gray-400);
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .body-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
 }
 
 /* Override Bootstrap Primary */
