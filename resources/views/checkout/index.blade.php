@@ -1,169 +1,76 @@
-{{-- resources/views/checkout/index.blade.php --}}
 @extends('layouts.app')
-
 @section('content')
-    <div class="container-fluid px-4 py-5">
-        <h1 class="h3 mb-4 text-gray-800">Checkout</h1>
 
-        <div class="row">
-            <form action="{{ route('checkout.store') }}" method="POST">
-                @csrf
-                <div class="row g-4">
+    <div class="container max-w-7xl mx-auto px-4 py-8">
+        <h1 class="h2 mb-5 fw-bold">Checkout</h1>
 
-                    {{-- Form Alamat --}}
-                    <div class="col-lg-8">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-header bg-white border-0 pb-0">
-                                <h5 class="card-title mb-3">
-                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                                    Informasi Pengiriman
-                                </h5>
-                            </div>
-                            <div class="card-body pt-0">
-                                @include('partials._errors')
+        <form action="{{ route('checkout.store') }}" method="POST">
+            @csrf
 
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold text-dark">Nama Penerima <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="name" value="{{ old('name', auth()->user()->name ?? '') }}"
-                                            class="form-control @error('name') is-invalid @enderror"
-                                            placeholder="Masukkan nama lengkap" required>
-                                        @error('name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+            <div class="row g-5">
+                <!-- Form Informasi Pengiriman -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="h5 card-title mb-4">Informasi Pengiriman</h2>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold text-dark">Nomor Telepon <span
-                                                class="text-danger">*</span></label>
-                                        <input type="tel" name="phone" value="{{ old('phone') }}"
-                                            class="form-control @error('phone') is-invalid @enderror"
-                                            placeholder="08xxxxxxxxxx" required>
-                                        @error('phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold text-dark">Alamat Lengkap <span
-                                                class="text-danger">*</span></label>
-                                        <textarea name="address" rows="4"
-                                            class="form-control @error('address') is-invalid @enderror"
-                                            placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota, Provinsi"
-                                            required>{{ old('address') }}</textarea>
-                                        @error('address')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Order Summary --}}
-                    <div class="col-lg-4">
-                        <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
-                            <div class="card-header bg-gradient-primary text-white border-0">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-receipt me-2"></i>
-                                    Ringkasan Pesanan
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive" style="max-height: 300px;">
-                                    <table class="table table-sm table-borderless mb-0">
-                                        <tbody>
-                                            @foreach($cart->items as $item)
-                                                <tr>
-                                                    <td class="text-sm">
-                                                        <div class="d-flex align-items-center">
-                                                            @if($item->product->image)
-                                                                <img src="{{ $item->product->image }}" class="rounded me-2"
-                                                                    width="40" alt="{{ $item->product->name }}">
-                                                            @endif
-                                                            <div>
-                                                                <div class="fw-semibold text-dark">
-                                                                    {{ Str::limit($item->product->name, 30) }}</div>
-                                                                <small class="text-muted">x {{ $item->quantity }}</small>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-end fw-semibold text-primary">
-                                                        Rp
-                                                        {{ number_format($item->subtotal ?? ($item->product->price * $item->quantity), 0, ',', '.') }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <label for="name" class="form-label">Nama Penerima</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        value="{{ auth()->user()->name }}" required>
                                 </div>
 
-                                <hr class="my-3">
-
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <span class="h5 mb-0 fw-bold text-dark">Total</span>
-                                    <span class="h4 mb-0 fw-bold text-primary">
-                                        Rp
-                                        {{ number_format($cart->total_price ?? $cart->items->sum(function ($item) {
-        return $item->subtotal ?? ($item->product->price * $item->quantity); }), 0, ',', '.') }}
-                                    </span>
+                                <div class="col-12">
+                                    <label for="phone" class="form-label">Nomor Telepon</label>
+                                    <input type="text" name="phone" id="phone" class="form-control" required>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold shadow-sm">
-                                    <i class="fas fa-credit-card me-2"></i>
-                                    Buat Pesanan
-                                </button>
-
-                                <div class="mt-3 text-center">
-                                    <small class="text-muted">
-                                        <i class="fas fa-lock me-1"></i>
-                                        Pembayaran aman & terjamin
-                                    </small>
+                                <div class="col-12">
+                                    <label for="address" class="form-label">Alamat Lengkap</label>
+                                    <textarea name="address" id="address" rows="4" class="form-control" required></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <!-- Ringkasan Pesanan -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm sticky-top" style="top: 1.5rem;">
+                        <div class="card-body">
+                            <h2 class="h5 card-title mb-4">Ringkasan Pesanan</h2>
+
+                            <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                                @foreach($cart->items as $item)
+                                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                                        <span>{{ $item->product->name }} × {{ $item->quantity }}</span>
+                                        <span class="fw-medium text-dark">Rp {{ number_format($item->subtotal, 0, ',', '.')
+                                            }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <span class="h6 mb-0">Total</span>
+                                <span class="h6 mb-0 fw-bold">Rp {{ number_format(
+        $cart->items->sum('subtotal'),
+        0,
+        ',',
+        '.'
+    ) }}</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
+                                Buat Pesanan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
+
 @endsection
-
-@push('styles')
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .sticky-top {
-            position: sticky;
-            top: 20px;
-        }
-
-        @media (max-width: 992px) {
-            .sticky-top {
-                position: relative;
-                top: 0;
-            }
-        }
-    </style>
-@endpush
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Format nomor telepon
-            const phoneInput = document.querySelector('input[name="phone"]');
-            if (phoneInput) {
-                phoneInput.addEventListener('input', function (e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.startsWith('08')) {
-                        value = '0' + value.substring(1);
-                    }
-                    e.target.value = value;
-                });
-            }
-        });
-    </script>
-@endpush

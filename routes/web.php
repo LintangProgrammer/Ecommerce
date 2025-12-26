@@ -233,7 +233,41 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 // routes/web.php (HAPUS SETELAH TESTING!)
 
+// ================================================
+// AUTH ROUTES (dari Laravel UI)
+// ================================================
+Auth::routes();
+
 use App\Services\MidtransService;
+
+// ================================================
+// GOOGLE OAUTH ROUTES
+// ================================================
+// Route ini diakses oleh browser, tidak perlu middleware auth
+// ================================================
+
+Route::controller(GoogleController::class)->group(function () {
+    // ================================================
+    // ROUTE 1: REDIRECT KE GOOGLE
+    // ================================================
+    // URL: /auth/google
+    // Dipanggil saat user klik tombol "Login dengan Google"
+    // ================================================
+    Route::get('/auth/google', 'redirect')
+        ->name('auth.google');
+
+    // ================================================
+    // ROUTE 2: CALLBACK DARI GOOGLE
+    // ================================================
+    // URL: /auth/google/callback
+    // Dipanggil oleh Google setelah user klik "Allow"
+    // URL ini HARUS sama dengan yang didaftarkan di Google Console!
+    // ================================================
+    Route::get('/auth/google/callback', 'callback')
+        ->name('auth.google.callback');
+});
+
+// routes/web.php (HAPUS SETELAH TESTING!)
 
 Route::get('/debug-midtrans', function () {
     // Cek apakah config terbaca
@@ -249,14 +283,14 @@ Route::get('/debug-midtrans', function () {
         $service = new MidtransService();
 
         // Buat dummy order untuk testing
-        $dummyOrder = new \App\Models\Order();
-        $dummyOrder->order_number = 'TEST-' . time();
-        $dummyOrder->total_amount = 10000;
-        $dummyOrder->shipping_cost = 0;
-        $dummyOrder->shipping_name = 'Test User';
-        $dummyOrder->shipping_phone = '08123456789';
+        $dummyOrder                   = new \App\Models\Order();
+        $dummyOrder->order_number     = 'TEST-' . time();
+        $dummyOrder->total_amount     = 10000;
+        $dummyOrder->shipping_cost    = 0;
+        $dummyOrder->shipping_name    = 'Test User';
+        $dummyOrder->shipping_phone   = '08123456789';
         $dummyOrder->shipping_address = 'Jl. Test No. 123';
-        $dummyOrder->user = (object) [
+        $dummyOrder->user             = (object) [
             'name'  => 'Tester',
             'email' => 'test@example.com',
             'phone' => '08123456789',
@@ -289,8 +323,30 @@ Route::get('/debug-midtrans', function () {
     }
 });
 
-// ================================================
-// AUTH ROUTES (dari Laravel UI)
-// ================================================
-Auth::routes();
+// routes/web.php
 
+use App\Http\Controllers\PaymentController;
+
+Route::middleware('auth')->group(function () {
+    // ... routes lainnya
+
+    // Payment Routes
+    Route::get('/orders/{order}/pay', [PaymentController::class, 'show'])
+        ->name('orders.pay');
+    Route::get('/orders/{order}/success', [PaymentController::class, 'success'])
+        ->name('orders.success');
+    Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
+        ->name('orders.pending');
+});
+
+// routes/web.php
+
+use App\Http\Controllers\MidtransNotificationController;
+
+// ============================================================
+// MIDTRANS WEBHOOK
+// Route ini HARUS public (tanpa auth middleware)
+// Karena diakses oleh SERVER Midtrans, bukan browser user
+// ============================================================
+Route::post('midtrans/notification', [MidtransNotificationController::class, 'handle'])
+    ->name('midtrans.notification');
