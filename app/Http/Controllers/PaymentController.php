@@ -24,7 +24,7 @@ class PaymentController extends Controller
         if ($order->payment_status === 'paid') {
             return response()->json(['error' => 'Pesanan sudah dibayar.'], 400);
         }
-
+           
         try {
             // 3. Generate Snap Token dari Midtrans
             $snapToken = $midtransService->createSnapToken($order);
