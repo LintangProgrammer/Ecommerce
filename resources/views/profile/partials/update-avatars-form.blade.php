@@ -1,5 +1,3 @@
-{{-- resources/views/profile/partials/update-avatar-form.blade.php --}}
-
 <p class="text-muted small">
     Upload foto profil kamu. Format yang didukung: JPG, PNG, WebP. Maksimal 2MB.
 </p>

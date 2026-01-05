@@ -1,5 +1,3 @@
-{{-- resources/views/profile/partials/connected-accounts.blade.php --}}
-
 <p class="text-muted small">Kelola akun sosial yang terhubung dengan akun kamu.</p>
 
 <div class="list-group">

@@ -18,6 +18,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransNotificationController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Auth\LoginController;
 // ================================================
 // HALAMAN PUBLIK (Tanpa Login)
 // ================================================
@@ -48,6 +50,8 @@ Route::middleware('auth')->group(function () {
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    // Batasi 5 request per menit
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 
     // Pesanan Saya
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

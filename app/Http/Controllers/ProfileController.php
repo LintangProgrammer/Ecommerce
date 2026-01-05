@@ -26,6 +26,13 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+
+        $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
+        'phone' => ['nullable', 'string', 'max:20'],
+        'address' => ['nullable', 'string', 'max:500'],
+    ]);
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {

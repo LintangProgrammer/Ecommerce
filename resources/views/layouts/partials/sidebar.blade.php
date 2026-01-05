@@ -41,13 +41,23 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="/admin/orders" aria-expanded="false">
+                    <a class="sidebar-link" href="/admin/orders" aria-dexpanded="false">
                         <span>
                             <i class="ti ti-receipt"></i>
                         </span>
                         <span class="hide-menu">Pesanan</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="/admin/reports/sales" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-receipt"></i>
+                        </span>
+                        <span class="hide-menu">Laporan</span>
+                    </a>
+                </li>
+
             </ul>
             <div class="unlimited-access hide-menu bg-light-primary position-relative mb-7 mt-5 rounded">
                 <div class="d-flex">
