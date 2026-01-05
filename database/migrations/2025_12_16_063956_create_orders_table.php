@@ -53,6 +53,7 @@ return new class extends Migration
 
             $table->enum('payment_status', ['unpaid', 'paid', 'failed'])->default('unpaid');
             $table->string('snap_token')->nullable();
+            $table->string('midtrans_order_id')->nullable();
             $table->timestamps();
 
         });

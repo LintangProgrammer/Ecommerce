@@ -25,7 +25,7 @@ return new class extends Migration
 // Snapshot data produk saat order
 // (karena harga/nama produk bisa berubah di kemudian hari)
             $table->string('product_name');
-            $table->decimal('price', 12, 2);
+            $table->decimal('price', 10, 2)->nullable();
             $table->integer('quantity');
             $table->decimal('subtotal', 15, 2);
 

@@ -17,10 +17,11 @@ class Order extends Model
         'shipping_name',
         'shipping_phone',
         'shipping_address',
-       
+        'payment_status',
+        'snap_token',
+        'status',
     ];
 
-    // Tambahkan relasi ini
     public function items()
     {
         return $this->hasMany(OrderItem::class);

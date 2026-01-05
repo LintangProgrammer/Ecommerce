@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Services\MidtransService;
 
 class OrderController extends Controller
 {
@@ -28,19 +27,23 @@ class OrderController extends Controller
     /**
      * Menampilkan detail satu pesanan.
      */
-     public function show(Order $order, MidtransService $midtrans)
+    public function show(Order $order)
 {
+    $order->load(['items', 'user']);
 
-    $order->load(['items','user']);
+    $snapToken = $order->snap_token; // ambil dulu dari DB
 
-        $snapTokenn = null;
-        if ($order->status === 'pending') {
-            $snapToken = $midtrans->createSnapToken($order);
+    if ($order->status === 'pending' && !$snapToken) {
+        // Generate baru jika belum ada
+        $midtrans = new \App\Services\MidtransService(); // atau inject
+        $snapToken = $midtrans->createSnapToken($order);
+
+        if ($snapToken) {
+            // SIMPAN KE DATABASE — INI YANG PALING PENTING!
+            $order->update(['snap_token' => $snapToken]);
+        }
     }
 
-    $order->load('items.product');
-    
-   
     return view('orders.show', compact('order', 'snapToken'));
 }
 

@@ -23,4 +23,4 @@
 
     Salam,<br>
     {{ config('app.name') }}
-</x-mail::message>
+</x-mail::message>  
