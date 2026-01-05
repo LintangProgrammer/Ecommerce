@@ -33,7 +33,7 @@ class OrderController extends Controller
 
     $snapToken = $order->snap_token; // ambil dulu dari DB
 
-    if ($order->status === 'pending' && !$snapToken) {
+    if ($order->status === 'pending' && !$snapToken && $order->total_amount > 0) {
         // Generate baru jika belum ada
         $midtrans = new \App\Services\MidtransService(); // atau inject
         $snapToken = $midtrans->createSnapToken($order);
