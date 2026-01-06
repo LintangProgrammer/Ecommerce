@@ -35,6 +35,7 @@ class MidtransNotificationController extends Controller
         $statusCode        = $payload['status_code'] ?? null;
         $grossAmount       = $payload['gross_amount'] ?? null;
         $signatureKey      = $payload['signature_key'] ?? null;
+        $serverKey = config('midtrans.server_key');
         $fraudStatus       = $payload['fraud_status'] ?? null;
         $transactionId     = $payload['transaction_id'] ?? null;
 

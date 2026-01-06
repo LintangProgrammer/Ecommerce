@@ -21,6 +21,7 @@ class Order extends Model
         'snap_token',
         'status',
     ];
+    
 
     public function items()
     {

@@ -133,5 +133,6 @@ Route::controller(GoogleController::class)->group(function () {
 });
 
 
-Route::post('midtrans/notification', [MidtransNotificationController::class, 'handle'])
-    ->name('midtrans.notification');
+// Pakai web.php (tanpa auth, karena Midtrans butuh public access)
+// routes/api.php atau routes/web.php
+Route::post('/midtrans/notification', [MidtransNotificationController::class, 'handle']);
