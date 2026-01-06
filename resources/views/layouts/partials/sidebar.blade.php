@@ -52,7 +52,7 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="/admin/reports/sales" aria-expanded="false">
                         <span>
-                            <i class="ti ti-receipt"></i>
+                            <i class="bi bi-megaphone"></i>
                         </span>
                         <span class="hide-menu">Laporan</span>
                     </a>
