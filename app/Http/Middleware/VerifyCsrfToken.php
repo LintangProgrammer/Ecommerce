@@ -6,8 +6,10 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
 {
-    protected $except = [
-        'midtrans/notification',
-        'midtrans/*',
-    ];
+    // app/Http/Middleware/VerifyCsrfToken.php
+protected $except = [
+    'midtrans/notification',
+     'midtrans/*',
+  // Tambahkan ini
+];
 }

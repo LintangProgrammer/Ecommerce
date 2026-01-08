@@ -2,7 +2,8 @@
 FILE: resources/views/home.blade.php
 FUNGSI: Halaman utama website
 ================================================ --}}
-<x-app-layout>
+
+@extends('layouts.app')
 
 @section('title', 'Beranda')
 
@@ -93,9 +94,12 @@ FUNGSI: Halaman utama website
                         <div class="card-body d-flex flex-column justify-content-center">
                             <h3>Member Baru?</h3>
                             <p>Dapatkan voucher Rp 50.000 untuk pembelian pertama</p>
-                            <a href="{{ route('register') }}" class="btn btn-light" style="width: fit-content;">
-                                Daftar Sekarang
-                            </a>
+                            {{-- Jadi: --}}
+                            @if(Route::has('register'))
+                             <a href="{{ route('register') }}">Register</a>
+                                @else
+                                <a href="/register">Register</a>
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -117,4 +121,3 @@ FUNGSI: Halaman utama website
         </div>
     </section>
 @endsection
-</x-app-layout>

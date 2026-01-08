@@ -1,38 +1,49 @@
 <?php
-// ========================================
-// FILE: app/Http/Controllers/Auth/RegisterController.php
-// FUNGSI: Mengatur proses registrasi user baru
-// ========================================
 
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;                    // Model User untuk berinteraksi dengan tabel users
-use Illuminate\Foundation\Auth\RegistersUsers; // Trait Laravel untuk logic registrasi
-use Illuminate\Support\Facades\Hash;    // Facade Hash untuk enkripsi password
-use Illuminate\Support\Facades\Validator; // Facade Validator untuk validasi input
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Register Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
+    |
+    */
+
     use RegistersUsers;
+
     /**
-     * Redirect setelah registrasi berhasil.
+     * Where to redirect users after registration.
+     *
+     * @var string
      */
     protected $redirectTo = '/home';
+
     /**
-     * Constructor.
+     * Create a new controller instance.
+     *
+     * @return void
      */
     public function __construct()
-    {        
+    {
         $this->middleware('guest');
     }
 
     /**
-     * Validasi data registrasi.
+     * Get a validator for an incoming registration request.
      *
-     * Method ini menentukan aturan validasi untuk input form.
-     *
-     * @param array $data Data dari request
+     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -41,34 +52,21 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-
-        ], [
-            'name.required'     => 'Nama wajib diisi.',
-            'email.required'    => 'Email wajib diisi.',
-            'email.unique'      => 'Email sudah terdaftar. Gunakan email lain.',
-            'password.min'      => 'Password minimal 8 karakter agar aman.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
     }
 
     /**
-     * Buat user baru setelah validasi berhasil.
+     * Create a new user instance after a valid registration.
      *
-     * Method ini dieksekusi oleh Trait RegistersUsers setelah validasi lolos.
-     *
-     * @param array 
-     * @return \App\Models\User Object user baru
+     * @param  array  $data
+     * @return \App\Models\User
      */
-    protected function create(array $data): User
+    protected function create(array $data)
     {
-        // ================================================
-        // CREATE USER + HASH PASSWORD
-        // ================================================
         return User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
+            'name' => $data['name'],
+            'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => 'customer',
         ]);
     }
 }
