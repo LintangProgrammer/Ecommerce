@@ -1,30 +1,26 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-class RegisterController extends Controller
+class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Register Controller
+    | Login Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
     |
     */
 
-    use RegistersUsers;
+    use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Where to redirect users after login.
      *
      * @var string
      */
@@ -37,36 +33,52 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
+    protected function redirectTo(): string
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        // ================================================
+        // LOGIKA REDIRECT DINAMIS
+        // ================================================
+
+        // Ambil user yang sedang login saat ini
+        $user = auth()->user();
+
+        // Jika role-nya admin, arahkan ke dashboard admin
+        if ($user->role === 'admin') {
+            return route('admin.dashboard');
+            // ↑ Menggunakan route helper lebih aman daripada hardcode URL '/admin/dashboard'
+        }
+
+        // Jika customer biasa, arahkan ke home landing page
+        return route('home');
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
-    protected function create(array $data)
+    protected function validateLogin($request): void
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        // ================================================
+        // VALIDASI INPUT LOGIN
+        // ================================================
+
+        $request->validate([
+            // $this->username() defaultnya return 'email'
+            // Kita bisa ubah method username() jika ingin login pakai username/no hp
+            $this->username() => 'required|string|email',
+            // ↑ required = wajib diisi
+            // ↑ email    = format harus valid (ada @ dan .)
+
+            'password'        => 'required|string|min:6',
+            // ↑ min:6 = minimal 6 karakter (opsional, untuk security dasar)
+        ], [
+            // ================================================
+            // CUSTOM ERROR MESSAGES (Bahasa Indonesia)
+            // ================================================
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid (harus ada @).',
+            'password.required' => 'Password wajib diisi.',
+            'password.min'      => 'Password minimal 6 karakter.',
         ]);
     }
 }
