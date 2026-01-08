@@ -11,6 +11,7 @@
                             <tr>
                                 <th>No. Order</th>
                                 <th>Tanggal</th>
+                                <th>Payment Status</th>
                                 <th>Status</th>
                                 <th>Total</th>
                                 <th class="text-end">Aksi</th>
@@ -22,14 +23,23 @@
                                     <td class="fw-bold text-primary">#{{ $order->order_number }}</td>
                                     <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                                     <td>
+                                        @if($order->payment_status == 'paid')
+                                            <span class="badge bg-success">Lunas</span>
+                                        @elseif($order->payment_status == 'pending')
+                                            <span class="badge bg-warning text-dark">Menunggu</span>
+                                        @else
+                                            <span class="badge bg-danger">Gagal</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <span class="badge
-                                            @if($order->status == 'pending') bg-warning text-dark
-                                            @elseif($order->status == 'processing') bg-info text-dark
-                                            @elseif($order->status == 'shipped') bg-primary
-                                            @elseif($order->status == 'delivered') bg-success
-                                            @elseif($order->status == 'cancelled') bg-danger
-                                            @endif
-                                        ">
+                                                    @if($order->status == 'pending') bg-warning text-dark
+                                                    @elseif($order->status == 'processing') bg-info text-dark
+                                                    @elseif($order->status == 'shipped') bg-primary
+                                                    @elseif($order->status == 'delivered') bg-success
+                                                    @elseif($order->status == 'cancelled') bg-danger
+                                                    @endif
+                                                ">
                                             @if($order->status == 'pending') Pending
                                             @elseif($order->status == 'processing') Diproses
                                             @elseif($order->status == 'shipped') Dikirim

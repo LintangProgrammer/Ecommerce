@@ -36,7 +36,7 @@
                                 <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
                                     <span class="fw-semibold">
                                         <i class="bi bi-shop me-1 text-primary"></i>
-                                        Assalaam Store
+                                        Hijab Shop
                                     </span>
                                     <span class="text-muted">
                                         &copy; {{ date('Y') }}. All rights reserved.
@@ -48,7 +48,7 @@
                                     <span class="text-muted me-1">Designed & Developed by</span>
                                     <a href="https://kaceinspace.vercel.app" target="_blank"
                                         class="fw-semibold text-decoration-none text-primary">
-                                        Kace
+                                        Lintang
                                     </a>
                                     <i class="bi bi-box-arrow-up-right ms-1 text-primary"></i>
                                 </div>

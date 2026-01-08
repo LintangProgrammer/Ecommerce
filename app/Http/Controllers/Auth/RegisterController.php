@@ -2,29 +2,32 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
-class LoginController extends Controller
+class RegisterController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Login Controller
+    | Register Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
     |
     */
 
-    use AuthenticatesUsers;
+    use RegistersUsers;
 
     /**
-     * Where to redirect users after login.
+     * Where to redirect users after registration.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -33,52 +36,55 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
+        $this->middleware('guest');
     }
 
-    protected function redirectTo(): string
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
     {
-        // ================================================
-        // LOGIKA REDIRECT DINAMIS
-        // ================================================
+        return Validator::make($data, [
+            // RULES VALIDASI
 
-        // Ambil user yang sedang login saat ini
-        $user = auth()->user();
+            'name'     => ['required', 'string', 'max:255'],
+            // ↑ Nama wajib, string, maksimal 255 char
 
-        // Jika role-nya admin, arahkan ke dashboard admin
-        if ($user->role === 'admin') {
-            return route('admin.dashboard');
-            // ↑ Menggunakan route helper lebih aman daripada hardcode URL '/admin/dashboard'
-        }
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // ↑ unique:users = Cek tabel 'users', kolom 'email'.
+            //   Jika email sudah ada, validasi gagal. PENTING!
 
-        // Jika customer biasa, arahkan ke home landing page
-        return route('home');
-    }
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // ↑ confirmed = Laravel akan mencari field bernama 'password_confirmation'
+            //   dan memastikan nilainya SAMA PERSIS dengan field 'password'.
+            //   Biasanya field ini ada di form register: <input name="password_confirmation">
 
-    protected function validateLogin($request): void
-    {
-        // ================================================
-        // VALIDASI INPUT LOGIN
-        // ================================================
-
-        $request->validate([
-            // $this->username() defaultnya return 'email'
-            // Kita bisa ubah method username() jika ingin login pakai username/no hp
-            $this->username() => 'required|string|email',
-            // ↑ required = wajib diisi
-            // ↑ email    = format harus valid (ada @ dan .)
-
-            'password'        => 'required|string|min:6',
-            // ↑ min:6 = minimal 6 karakter (opsional, untuk security dasar)
         ], [
-            // ================================================
-            // CUSTOM ERROR MESSAGES (Bahasa Indonesia)
-            // ================================================
-            'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid (harus ada @).',
-            'password.required' => 'Password wajib diisi.',
-            'password.min'      => 'Password minimal 6 karakter.',
+            // CUSTOM MESSAGES
+            'name.required'      => 'Nama wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'email.unique'       => 'Email sudah terdaftar. Gunakan email lain.',
+            'password.min'       => 'Password minimal 8 karakter agar aman.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\Models\User
+     */
+    protected function create(array $data)
+    {
+        return User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role'     => 'customer',
         ]);
     }
 }

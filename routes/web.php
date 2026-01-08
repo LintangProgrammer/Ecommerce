@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransNotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
+
 // ================================================
 // HALAMAN PUBLIK (Tanpa Login)
 // ================================================
@@ -33,9 +35,20 @@ Route::get('/products', [CatalogController::class, 'index'])->name('catalog.inde
 Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // ================================================
-// HALAMAN YANG BUTUH LOGIN (Customer)
+// GOOGLE OAUTH ROUTES
+// ================================================
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('/auth/google', 'redirect')->name('auth.google');
+    Route::get('/auth/google/callback', 'callback')->name('auth.google.callback');
+});
+
+// ================================================
+// MIDTRANS WEBHOOK (HARUS PUBLIC - TANPA AUTH)
 // ================================================
 
+// ================================================
+// HALAMAN YANG BUTUH LOGIN (Customer)
+// ================================================
 Route::middleware('auth')->group(function () {
     // Keranjang Belanja
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -50,8 +63,6 @@ Route::middleware('auth')->group(function () {
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-    // Batasi 5 request per menit
-Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 
     // Pesanan Saya
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -65,37 +76,32 @@ Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.destroy');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-
 });
 
 // ================================================
 // HALAMAN ADMIN (Butuh Login + Role Admin)
 // ================================================
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-            // Laporan Penjualan
-            Route::get('/reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
-        // Update status pesanan
-        Route::patch('/orders/{order}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Kategori CRUD
     Route::resource('categories', CategoryController::class)->except(['show']);
+    
     // Produk CRUD
     Route::resource('products', ProductController::class);
 
     // Manajemen Pesanan
-    Route::get('/orders/{order}/pay', [PaymentController::class, 'show'])
-        ->name('orders.pay');
-    Route::get('/orders/{order}/success', [PaymentController::class, 'success'])
-        ->name('orders.success');
-    Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
-        ->name('orders.pending');
-
+    Route::get('/orders/{order}/pay', [PaymentController::class, 'show'])->name('orders.pay');
+    Route::get('/orders/{order}/success', [PaymentController::class, 'success'])->name('orders.success');
+    Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])->name('orders.pending');
+    Route::patch('/orders/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    
     // Resource route untuk orders (index, show, update)
-    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
-
+    Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'update']);
+    
+    // Laporan Penjualan
+    Route::get('/reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
 });
 
 // ================================================
@@ -103,36 +109,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // ================================================
 Auth::routes();
 
-use App\Services\MidtransService;
+Route::post('/midtrans/notification', [MidtransNotificationController::class, 'handle'])
+    ->name('midtrans.notification');
 
-// ================================================
-// GOOGLE OAUTH ROUTES
-// ================================================
-// Route ini diakses oleh browser, tidak perlu middleware auth
-// ================================================
-
-Route::controller(GoogleController::class)->group(function () {
-    // ================================================
-    // ROUTE 1: REDIRECT KE GOOGLE
-    // ================================================
-    // URL: /auth/google
-    // Dipanggil saat user klik tombol "Login dengan Google"
-    // ================================================
-    Route::get('/auth/google', 'redirect')
-        ->name('auth.google');
-
-    // ================================================
-    // ROUTE 2: CALLBACK DARI GOOGLE
-    // ================================================
-    // URL: /auth/google/callback
-    // Dipanggil oleh Google setelah user klik "Allow"
-    // URL ini HARUS sama dengan yang didaftarkan di Google Console!
-    // ================================================
-    Route::get('/auth/google/callback', 'callback')
-        ->name('auth.google.callback');
+    // Social Auth Routes
+Route::middleware('auth')->group(function () {
+    Route::delete('/profile/google/unlink', [ProfileController::class, 'unlinkGoogle'])
+        ->name('profile.google.unlink');
+    
+    // Jika ada provider lain
+    Route::delete('/profile/facebook/unlink', [ProfileController::class, 'unlinkFacebook'])
+        ->name('profile.facebook.unlink');
 });
-
-
-// Pakai web.php (tanpa auth, karena Midtrans butuh public access)
-// routes/api.php atau routes/web.php
-Route::post('/midtrans/notification', [MidtransNotificationController::class, 'handle']);

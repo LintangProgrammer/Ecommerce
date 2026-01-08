@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Services\MidtransService;
-use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -24,7 +23,7 @@ class PaymentController extends Controller
         if ($order->payment_status === 'paid') {
             return response()->json(['error' => 'Pesanan sudah dibayar.'], 400);
         }
-           
+
         try {
             // 3. Generate Snap Token dari Midtrans
             $snapToken = $midtransService->createSnapToken($order);
