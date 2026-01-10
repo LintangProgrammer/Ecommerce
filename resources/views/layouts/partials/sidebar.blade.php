@@ -24,6 +24,16 @@
                         <span class="hide-menu">Dashboard</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('home') }}" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-house-door"></i>
+                        </span>
+                        <span class="hide-menu">Home</span>
+                    </a>
+                </li>
+                
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="/admin/categories" aria-expanded="false">
                         <span>

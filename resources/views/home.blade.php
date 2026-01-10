@@ -8,16 +8,24 @@ FUNGSI: Halaman utama website - Hijab Shop Theme
 @section('title', 'Beranda')
 
 @section('content')
-    {{-- Hero Section dengan Gradient Elegant --}}
-    <section class="hero-section position-relative overflow-hidden"
-        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 600px;">
+    {{-- Hero Section dengan VIDEO BACKGROUND --}}
+    <section class="hero-section position-relative overflow-hidden" style="min-height: 600px;">
 
-        <div class="container position-relative" style="padding-top: 100px; padding-bottom: 100px;">
+        {{-- VIDEO BACKGROUND - UNTUK HOME --}}
+        <video autoplay muted loop playsinline class="hero-video-background">
+            <source src="{{ asset('videos/hijab-home.mp4') }}" type="video/mp4">
+            {{-- Fallback jika video tidak ada --}}
+        </video>
+
+        {{-- Overlay untuk readability - TAMBAHAN BARU --}}
+        <div class="hero-video-overlay"></div>
+
+        <div class="container position-relative" style="padding-top: 100px; padding-bottom: 100px; z-index: 2;">
             <div class="row align-items-center">
                 <div class="col-lg-6 text-white mb-5 mb-lg-0" data-aos="fade-right">
                     <div class="badge bg-white text-primary mb-3 px-3 py-2">
                         <i class="bi bi-star-fill text-warning me-1"></i>
-                        Koleksi Terbaru 2024
+                        Koleksi Terbaru 2026
                     </div>
                     <h1 class="display-3 fw-bold mb-4" style="line-height: 1.2;">
                         Tampil Cantik & Syar'i dengan Hijab Berkualitas
@@ -415,6 +423,42 @@ FUNGSI: Halaman utama website - Hijab Shop Theme
 
 @push('styles')
     <style>
+        /* ============================================
+               VIDEO BACKGROUND STYLES - TAMBAHAN BARU
+               ============================================ */
+
+        /* Video sebagai background hero */
+        .hero-video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        /* Overlay untuk membuat teks lebih terbaca - OPACITY DIKURANGI */
+        .hero-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.60) 0%, rgba(118, 75, 162, 0.60) 100%);
+            z-index: 1;
+        }
+
+        /* Pastikan konten di atas video */
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================
+               EXISTING STYLES
+               ============================================ */
+
         .category-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
@@ -434,6 +478,7 @@ FUNGSI: Halaman utama website - Hijab Shop Theme
             bottom: 0;
             background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
+            z-index: 2;
         }
 
         @keyframes float {
@@ -450,6 +495,13 @@ FUNGSI: Halaman utama website - Hijab Shop Theme
 
         .card:hover {
             transform: rotate(0deg) scale(1.05) !important;
+        }
+
+        /* Responsive video */
+        @media (max-width: 768px) {
+            .hero-video-background {
+                object-position: center;
+            }
         }
     </style>
 @endpush

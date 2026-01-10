@@ -22,6 +22,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 
+
 // ================================================
 // HALAMAN PUBLIK (Tanpa Login)
 // ================================================
@@ -76,7 +77,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.destroy');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-});
+});Route::get('/profile/avatar', [ProfileController::class, 'editAvatar'])->name('profile.avatar.edit');
+Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.destroy');
+
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
 // ================================================
 // HALAMAN ADMIN (Butuh Login + Role Admin)
@@ -120,4 +125,15 @@ Route::middleware('auth')->group(function () {
     // Jika ada provider lain
     Route::delete('/profile/facebook/unlink', [ProfileController::class, 'unlinkFacebook'])
         ->name('profile.facebook.unlink');
+
+      // Menampilkan halaman avatar
+
+
+// Route yang sudah ada
+    
+Route::post('/email/verification-notification', function () {
+    return back();
+})->name('verification.send');
+
+
 });
