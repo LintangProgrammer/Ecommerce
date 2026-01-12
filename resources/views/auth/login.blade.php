@@ -290,7 +290,7 @@ FUNGSI: Halaman form login dengan video background (tidak full page)
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
-
+            
     /* Link hover */
     a:hover {
         opacity: 0.85;
